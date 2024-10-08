@@ -2,7 +2,8 @@ package com.mechachieve.vinculus.user;
 
 public enum UserRole {
     ADMIN("admin"),
-    USER("user");
+    USERTUTOR("usuario-tutor"),
+    USERTUTORADO("usuario-tutorado");
 
     private String role;
 

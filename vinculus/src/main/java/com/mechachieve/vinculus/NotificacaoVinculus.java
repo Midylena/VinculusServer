@@ -10,7 +10,10 @@ public class NotificacaoVinculus {
 
 	private long id;
 	private int notificacao;
-	private String dataHoraAtual;
+	private String local;
+	private String clienteId;
+	private String dataAtual;
+	private String horaAtual;
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,10 +29,28 @@ public class NotificacaoVinculus {
 	public void setNotificacao(int notificacao) {
 		this.notificacao = notificacao;
 	}
-	public String getDataHoraAtual() {
-		return dataHoraAtual;
+	public String getClienteId() {
+		return clienteId;
 	}
-	public void setDataHoraAtual(String dataHoraAtual) {
-		this.dataHoraAtual = dataHoraAtual;
+	public void setClienteId(String clienteId) {
+		this.clienteId = clienteId;
+	}
+	public String getDataAtual() {
+		return dataAtual;
+	}
+	public void setDataAtual(String dataAtual) {
+		this.dataAtual = dataAtual;
+	}
+	public String getHoraAtual() {
+		return horaAtual;
+	}
+	public void setHoraAtual(String horaAtual) {
+		this.horaAtual = horaAtual;
+	}
+	public String getLocal() {
+		return local;
+	}
+	public void setLocal(String local) {
+		this.local = local;
 	}
 }

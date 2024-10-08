@@ -26,7 +26,9 @@ public class HistoricoRestVinculus {
 	@Autowired
 	private HistoricoDaoVinculusPost historicoVinculusPost;
 	@Autowired
-	private NotificacaoDaoVinculus notificacaoVinculus;
+	private NotificacaoDaoVinculusLast notificacaoVinculusLast;
+	@Autowired
+	private NotificacaoDaoVinculusList notificacaoVinculusList;
 	@Autowired
 	private ImagemDaoVinculusGet imagemVinculusGet;
 	@Autowired
@@ -39,12 +41,12 @@ public class HistoricoRestVinculus {
 	private AtividadeDaoVinculusLastLeg atividadeVinculusLastLeg;
 
 	@GetMapping("/listAll")
-	public List<HistoricoVinculus> get(){
+	public List<HistoricoVinculus> getAll(){
 		return historicoVinculusGet.findAll();
 	}
 
 	@GetMapping("/get")
-    public ResponseEntity<?> getClienteDados(@PathVariable String login) {
+    public ResponseEntity<?> getDados(@PathVariable String login) {
         Optional<HistoricoVinculus> cliente = historicoVinculusGet.findFirstByClienteIdOrderByIdDesc(login);
 
         if (cliente.isPresent()) {
@@ -56,7 +58,7 @@ public class HistoricoRestVinculus {
     }
 
 	@PostMapping("/post")
-    public ResponseEntity<?> atualizarDados(@PathVariable String login, @RequestBody HistoricoVinculus novosDados) {
+    public ResponseEntity<?> postDados(@PathVariable String login, @RequestBody HistoricoVinculus novosDados) {
         Optional<User> autorizado = historicoVinculusPost.findByLogin(login);
 
         if (autorizado.isPresent()) {
@@ -68,17 +70,29 @@ public class HistoricoRestVinculus {
         }
     }
 
-	@GetMapping("/notificacaoGet")
-	public Collection<NotificacaoVinculus> notificacao(){
-		return notificacaoVinculus.notificacao();
+	@GetMapping("/notificacaoLast")
+	public Collection<NotificacaoVinculus> getNotificacaoLast(){
+		return notificacaoVinculusLast.notificacao();
 	}
 
+	@GetMapping("/notificacaoList/{data}")
+	public ResponseEntity<?> getNotificacaoList(@PathVariable String login, @PathVariable String data) {
+	    List<NotificacaoVinculus> clienteList = notificacaoVinculusList.findByClienteIdAndDataAtualOrderByIdDesc(login, data);
+	    
+	    if (!clienteList.isEmpty()) {
+	        return ResponseEntity.ok(clienteList);
+	    } else {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                             .body("Cliente não encontrado");
+	    }
+	}
+	
 	@PostMapping("/notificacaoPost")
-	public String post(@RequestBody NotificacaoVinculus notificacao) {
-		notificacaoVinculus.save(notificacao);
+	public String postNotificacao(@RequestBody NotificacaoVinculus notificacao) {
+		notificacaoVinculusList.save(notificacao);
 		return "ENVIADO";
 	}
-
+	
 	@GetMapping("/imagemGet")
     public ResponseEntity<?> getImagem(@PathVariable String login) {
         Optional<ImagemVinculus> cliente = imagemVinculusGet.findImagemByClienteId(login);
@@ -105,7 +119,7 @@ public class HistoricoRestVinculus {
     }
 	
 	@GetMapping("/atividadeList/{data}")
-	public ResponseEntity<?> getHistoricoPorClienteEData(@PathVariable String login, @PathVariable String data) {
+	public ResponseEntity<?> getAtividadeList(@PathVariable String login, @PathVariable String data) {
 	    List<AtividadeVinculus> clienteList = atividadeVinculusList.findByClienteIdAndDateOrderByIdDesc(login, data);
 	    
 	    if (!clienteList.isEmpty()) {
@@ -117,12 +131,12 @@ public class HistoricoRestVinculus {
 	}
 	
 	@GetMapping("/atividadeLast")
-	public Collection<AtividadeVinculus> atividade(){
+	public Collection<AtividadeVinculus> getAtividadeLast(){
 		return atividadeVinculusLast.atividade();
 	}
 	
 	@GetMapping("/atividadeLastLeg/{data}")
-	public ResponseEntity<?> getLastLeg(@PathVariable String login, @PathVariable String data) {
+	public ResponseEntity<?> getAtividadeLastLeg(@PathVariable String login, @PathVariable String data) {
 	    Optional<AtividadeVinculus> autorizado = atividadeVinculusLastLeg.findLastByClienteIdAndDate(login, data);
 
 	    if (autorizado.isPresent()) {
@@ -133,11 +147,9 @@ public class HistoricoRestVinculus {
 	    }
 	}
 
-	
 	@PostMapping("/atividadePost")
-	public String atividadePost(@RequestBody AtividadeVinculus atividade) {
+	public String postAtividade(@RequestBody AtividadeVinculus atividade) {
 		atividadeVinculusList.save(atividade);
 		return "ENVIADO";
 	}
-
 }
