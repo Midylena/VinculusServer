@@ -23,7 +23,9 @@ jobs:
           distribution: 'microsoft'
 
       - name: Build with Maven
-        run: cd vinculus && mvn clean install
+        run: |
+          cd vinculus
+          mvn clean install
 
 
       - name: Upload artifact for deployment job
